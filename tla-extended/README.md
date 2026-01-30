@@ -36,12 +36,6 @@ tla-extended/
     └── ...
 ```
 
-## Requirements
-
-- Java 11+ (for TLC model checker)
-- [tla2tools.jar](https://github.com/tlaplus/tlaplus/releases)
-- [CommunityModules-deps.jar](https://github.com/tlaplus/CommunityModules/releases)
-
 ## Trace Validation
 
 ### 1. Apply Instrumentation Patch
@@ -112,20 +106,6 @@ The specification defines **85 invariants** organized into 8 categories, derived
 | Election | 7 | `MoreThanOneLeaderInv`, `VotesGrantedSubsetInv`, `CandidateVotedForSelfInv` |
 | Term | 6 | `TermPositiveInv`, `LeaderTermPositiveInv`, `TermAndVoteInv` |
 
-
-### Key Safety Invariants (from Raft Paper)
-
-- **MoreThanOneLeaderInv** - At most one leader per term
-- **LogMatchingInv** - If two logs contain an entry with the same index and term, the logs are identical in all preceding entries
-- **LeaderCompletenessInv** - If an entry is committed, it will be present in the logs of all future leaders
-- **QuorumLogInv** - Committed entries exist on a quorum of servers
-
-### Bug Detection Invariants (from Issue/Bug)
-
-- **AppendEntriesPrevLogTermValidInv** - Prevents bug 76f1249 (panic on log truncation)
-- **SinglePendingLeaveJointInv** - Prevents bug bd3c759 (multiple auto-leave attempts)
-- **ProbeNetworkMessageLimitInv** - Detects flow control issues in StateProbe
-
 ## Model Checking (Simulation)
 
 For quick exploration via simulation:
@@ -139,9 +119,3 @@ java -XX:+UseParallelGC \
     -simulate \
     -depth 100
 ```
-
-## References
-
-- [etcd/raft documentation](https://pkg.go.dev/go.etcd.io/raft/v3)
-- [Raft paper](https://raft.github.io/raft.pdf)
-- [TLA+ documentation](https://lamport.azurewebsites.net/tla/tla.html)
