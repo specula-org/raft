@@ -89,7 +89,7 @@ The uncovered statements (5.57%) represent edge cases that require strict timing
 
 ## Invariants
 
-The specification defines **96 invariants** organized into 8 categories, derived from 3 sources:
+The specification defines **85 invariants** organized into 8 categories, derived from 3 sources:
 
 ### Sources
 
@@ -99,18 +99,19 @@ The specification defines **96 invariants** organized into 8 categories, derived
 | **Code** | Invariants derived from etcd/raft implementation details |
 | **Issue/Bug** | Regression tests for historical bugs from git history |
 
-### Categories
+**Categories:**
 
-| Category | Count | Description | Example Invariants |
-|----------|-------|-------------|-------------------|
-| **Progress** | 24 | Progress tracking, Inflights, flow control | `ProbeLimitInv`, `ReplicatePauseInv`, `InflightsLogIndexInv` |
-| **Log** | 12 | Log structure, matching, indexing | `LogMatchingInv`, `LogStructureInv`, `LeaderLogLengthInv` |
-| **Message** | 18 | Message validity, endpoints, content | `MessageIndexValidInv`, `AppendEntriesCommitBoundInv` |
-| **Snapshot** | 14 | Snapshot state, consistency | `SnapshotInflightsInv`, `SnapshotTermValidInv` |
-| **Election** | 10 | Leader election, voting | `MoreThanOneLeaderInv`, `VotesGrantedSubsetInv` |
-| **Config** | 8 | Configuration, joint consensus | `JointConfigNonEmptyInv`, `ConfigurationInv` |
-| **Term** | 6 | Term validity, consistency | `TermPositiveInv`, `LeaderTermPositiveInv` |
-| **Durable** | 4 | Durability, commitment | `CommittedIsDurableInv`, `AppliedBoundInv` |
+| Category | Count | Example Invariants |
+|----------|-------|-------------------|
+| Log | 17 | `LogMatchingInv`, `QuorumLogInv`, `CommitIndexBoundInv` |
+| Snapshot | 14 | `SnapshotStateInv`, `SnapshotTermValidInv`, `SnapshotPendingInv` |
+| Progress | 13 | `ProbeLimitInv`, `MatchIndexBoundInv`, `NextIndexBoundInv` |
+| Inflights | 11 | `InflightsLogIndexInv`, `InflightsMonotonicInv`, `InflightsInv` |
+| Config | 9 | `JointConfigNonEmptyInv`, `ConfigurationInv`, `SinglePendingLeaveJointInv` |
+| Message | 8 | `MessageIndexValidInv`, `AppendEntriesCommitBoundInv`, `MessageEndpointsValidInv` |
+| Election | 7 | `MoreThanOneLeaderInv`, `VotesGrantedSubsetInv`, `CandidateVotedForSelfInv` |
+| Term | 6 | `TermPositiveInv`, `LeaderTermPositiveInv`, `TermAndVoteInv` |
+
 
 ### Key Safety Invariants (from Raft Paper)
 
