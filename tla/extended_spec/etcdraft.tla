@@ -2999,6 +2999,39 @@ PendingConfIndexAutoLeaveInv ==
                 pendingConfChangeIndex[i] >= Min(leaveJointIndices)
 
 \* ----------------------------------------------------------------------------
+\* Invariant: JointStateAutoLeavePossibleInv
+\* Bug: Issue #12136 - Joint state stuck due to extra condition in auto-leave
+\* Reference: raft.go:745 - Auto-leave trigger condition
+\* ----------------------------------------------------------------------------
+JointStateAutoLeavePossibleInv ==
+    \A i \in Server :
+        (state[i] = Leader /\ IsJointConfig(i) /\ config[i].autoLeave = TRUE) =>
+            ((applied[i] >= pendingConfChangeIndex[i]) =>
+                pendingConfChangeIndex[i] < LastIndex(log[i]))
+
+\* ----------------------------------------------------------------------------
+\* Invariant: ElectionConfigAppliedInv
+\* Bug: Issue #7280 - Async apply of config change can cause election issues
+\* Reference: raft.go - Config must be applied before starting election
+\* ----------------------------------------------------------------------------
+ElectionConfigAppliedInv ==
+    \A i \in Server :
+        state[i] = Candidate =>
+            LET configIndicesInCommitted == {k \in 1..commitIndex[i] :
+                    k <= Len(historyLog[i]) /\ historyLog[i][k].type = ConfigEntry}
+            IN configIndicesInCommitted = {} \/ appliedConfigIndex[i] >= Max(configIndicesInCommitted)
+
+\* ----------------------------------------------------------------------------
+\* Invariant: SnapshotTransitionCorrectInv
+\* Bug: Issue #124 - Progress state stuck in StateSnapshot
+\* Reference: tracker/progress.go - State transition from StateSnapshot
+\* ----------------------------------------------------------------------------
+SnapshotTransitionCorrectInv ==
+    \A i, j \in Server :
+        (state[i] = Leader /\ progressState[i][j] = StateSnapshot) =>
+            matchIndex[i][j] <= pendingSnapshot[i][j]
+
+\* ----------------------------------------------------------------------------
 \* Aggregate Bug Detection Invariants
 \* ----------------------------------------------------------------------------
 
@@ -3006,6 +3039,9 @@ BugDetectionInv ==
     /\ AppendEntriesPrevLogTermValidInv      \* Bug 76f1249
     /\ SinglePendingLeaveJointInv            \* Bug bd3c759
     /\ PendingConfIndexAutoLeaveInv          \* Bug bd3c759
+    /\ JointStateAutoLeavePossibleInv        \* Bug #12136
+    /\ ElectionConfigAppliedInv              \* Bug #7280
+    /\ SnapshotTransitionCorrectInv          \* Bug #124
 
 \* ============================================================================
 \* P0: CRITICAL INVARIANTS - Known to cause panics in etcd

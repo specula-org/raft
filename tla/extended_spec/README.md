@@ -2,12 +2,6 @@
 
 This directory contains a system-level TLA+ specification for the etcd/raft library, extending the protocol-level specification in `../`. The specification models implementation details including progress tracking (`StateProbe`, `StateReplicate`, `StateSnapshot`), flow control (`MsgAppFlowPaused`, Inflights), detailed snapshot handling, and joint consensus configuration changes.
 
-## Requirements
-
-- Java 11+ (for TLC model checker)
-- [tla2tools.jar](https://github.com/tlaplus/tlaplus/releases)
-- [CommunityModules-deps.jar](https://github.com/tlaplus/CommunityModules/releases)
-
 ## Trace Validation
 
 ### 1. Apply Instrumentation Patch
@@ -53,7 +47,7 @@ java -XX:+UseParallelGC \
 
 ## Invariants
 
-The specification defines **85 invariants** derived from three sources:
-- **Raft Paper:** Safety properties (`MoreThanOneLeaderInv`, `LogMatchingInv`, `LeaderCompletenessInv`)
-- **Code:** Implementation details (`InflightsLogIndexInv`, `ProgressStateTypeInv`, `SnapshotInflightsInv`)
-- **Issue/Bug:** Historical bug regression tests (`AppendEntriesPrevLogTermValidInv`, `SinglePendingLeaveJointInv`)
+The specification defines **88 invariants** derived from three sources:
+- **Raft Paper:** Safety properties
+- **Code:** Implementation details
+- **Issue/Bug:** Historical bug regression tests 
