@@ -1,6 +1,6 @@
 # System-Level TLA+ Specification for etcd/raft
 
-This directory contains a system-level TLA+ specification for the etcd/raft library, extending the protocol-level specification in `../protocol_spec/`. The specification models implementation details including progress tracking (`StateProbe`, `StateReplicate`, `StateSnapshot`), flow control (`MsgAppFlowPaused`, Inflights), detailed snapshot handling, and joint consensus configuration changes.
+This directory contains a system-level TLA+ specification for the etcd/raft library, extending the protocol-level specification in `../`. The specification models implementation details including progress tracking (`StateProbe`, `StateReplicate`, `StateSnapshot`), flow control (`MsgAppFlowPaused`, Inflights), detailed snapshot handling, and joint consensus configuration changes.
 
 ## Requirements
 
@@ -14,7 +14,7 @@ This directory contains a system-level TLA+ specification for the etcd/raft libr
 
 ```bash
 cd /path/to/raft
-git apply tla/system_spec/patches/instrumentation.patch
+git apply tla/extended_spec/patches/instrumentation.patch
 ```
 
 ### 2. Generate Traces
@@ -22,7 +22,7 @@ git apply tla/system_spec/patches/instrumentation.patch
 Build and run the harness to generate traces from raft tests:
 
 ```bash
-cd tla/system_spec/harness
+cd tla/extended_spec/harness
 go build -o harness .
 ./harness -test TestBasic -output ./traces/
 ```
@@ -30,7 +30,7 @@ go build -o harness .
 ### 3. Validate Traces
 
 ```bash
-cd tla/system_spec
+cd tla/extended_spec
 ./validate.sh -s Traceetcdraft.tla -c Traceetcdraft.cfg traces/*.ndjson
 ```
 
